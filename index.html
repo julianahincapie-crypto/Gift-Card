@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>¡Tu Regalo de Dance World!</title>
+    <title>¡Tu Regalo Especial!</title>
     <style>
         /* --- ESTILOS GENERALES --- */
         body {
@@ -12,194 +12,165 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background: radial-gradient(circle, #2c3e50, #000000); /* Fondo oscuro para que resalten las estrellas */
-            font-family: 'Poppins', 'Segoe UI', sans-serif;
-            overflow: hidden; /* Evita barras de desplazamiento por las estrellas */
+            background: radial-gradient(circle, #1a1a2e, #16213e); /* Fondo noche estrellada */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
         }
 
-        /* --- CONTENEDOR DE LA TARJETA (Perspectiva 3D) --- */
+        /* --- TARJETA --- */
         .card-container {
-            width: 350px;
-            height: 250px;
-            perspective: 1500px; /* Crucial para el efecto 3D */
+            width: 320px;
+            height: 450px;
+            perspective: 1000px;
             cursor: pointer;
-            z-index: 10; /* Por encima de las estrellas */
+            z-index: 10;
         }
 
-        /* --- LA TARJETA EN SÍ (Gira) --- */
         .card {
             width: 100%;
             height: 100%;
             position: relative;
             transform-style: preserve-3d;
-            transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
             border-radius: 20px;
         }
 
-        /* Clase que aplica JavaScript al hacer clic */
         .card.open {
             transform: rotateY(180deg);
         }
 
-        /* --- CARAS DE LA TARJETA (Común) --- */
         .front, .back {
             position: absolute;
             width: 100%;
             height: 100%;
-            backface-visibility: hidden; /* Oculta la cara trasera al girar */
+            backface-visibility: hidden;
             border-radius: 20px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 25px;
+            padding: 30px;
             box-sizing: border-box;
             text-align: center;
         }
 
-        /* --- DISEÑO CARA FRONTAL (Sobria y Misteriosa) --- */
+        /* DISEÑO FRONTAL */
         .front {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Degradado violeta/azul elegante */
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
             color: white;
-            border: 2px solid rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.1);
         }
 
-        .front h2 { margin: 0; font-size: 2.2em; text-transform: uppercase; letter-spacing: 2px; }
-        .front p { opacity: 0.8; font-size: 1em; margin-top: 10px; }
-        .gift-icon { font-size: 4em; margin-bottom: 10px; }
+        .front h1 { font-size: 2.5em; margin: 0; }
+        .front p { font-size: 1.1em; opacity: 0.9; }
+        .icon-gift { font-size: 80px; margin-bottom: 20px; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3)); }
 
-        /* --- DISEÑO CARA TRASERA (El Regalo) --- */
+        /* DISEÑO TRASERO (REGALO) */
         .back {
-            background-color: #ffffff;
+            background: #ffffff;
             color: #333;
-            transform: rotateY(180deg); /* Ya está girada por defecto */
-            border: 5px solid #764ba2; /* Borde con el color principal */
+            transform: rotateY(180deg);
+            border: 8px solid #2575fc;
         }
 
-        .back h3 { color: #764ba2; margin: 0 0 10px 0; font-size: 1.8em; }
-        .back p { margin: 5px 0; font-size: 1em; line-height: 1.4; }
-        .highlight { font-weight: bold; color: #cc0052; } /* Resaltado para la dirección */
-        .dance-icon { font-size: 2.5em; color: #ff9a9e; margin-bottom: 5px; }
+        .back h2 { color: #6a11cb; margin-top: 0; font-size: 1.8em; }
+        .back .content { font-size: 1.1em; line-height: 1.5; }
+        .address { 
+            background: #f0f4ff; 
+            padding: 10px; 
+            border-radius: 10px; 
+            font-weight: bold; 
+            color: #2575fc;
+            margin: 15px 0;
+            font-size: 0.9em;
+        }
+        .footer-msg { font-style: italic; color: #666; font-size: 0.9em; }
 
-        /* --- EFECTO DE ESTRELLAS (Contenedor JS) --- */
+        /* --- ESTRELLAS --- */
         .star {
             position: absolute;
-            background-color: white;
+            background: white;
             border-radius: 50%;
             opacity: 0;
-            pointer-events: none; /* No interfieren con el clic */
-            z-index: 1;
+            pointer-events: none;
         }
 
-        @keyframes star-explosion {
+        @keyframes explode {
             0% { transform: scale(0); opacity: 1; }
             100% { transform: scale(1) translate(var(--dx), var(--dy)); opacity: 0; }
         }
-
     </style>
 </head>
 <body>
 
-    <audio id="bgMusic" loop>
-        <source src="https://cdn.pixabay.com/audio/2024/11/05/audio_5b364e03f5.mp3" type="audio/mpeg">
-        Tu navegador no soporta audio.
+    <audio id="music" loop>
+        <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_73068e6f1f.mp3" type="audio/mpeg">
     </audio>
 
-    <div class="card-container" onclick="toggleCard()">
-        <div class="card" id="myCard">
-            
+    <div class="card-container" onclick="openCard()">
+        <div class="card" id="card">
             <div class="front">
-                <div class="gift-icon">🎁</div>
-                <h2>Un Regalo</h2>
-                <p>para mover el esqueleto...</p>
-                <p><em>(Toca para abrir)</em></p>
+                <div class="icon-gift">🎁</div>
+                <h1>Para ti...</h1>
+                <p>Toca para descubrir tu sorpresa</p>
             </div>
 
             <div class="back">
-                <div class="dance-icon">💃🕺</div>
-                <h3>¡A Bailar!</h3>
-                <p>Te regalamos un pase para</p>
-                <p><strong>dos clases de baile</strong> en la academia</p>
-                <p><span class="highlight">Dance World</span></p>
-                <p><em>(Cra 11d #118a - 95)</em></p>
-                <p>¡Queremos verte disfrutar y moverte al ritmo de este nuevo año!</p>
+                <h2>¡A BAILAR! 💃🕺</h2>
+                <div class="content">
+                    <p>Te regalamos un pase para <strong>dos clases de baile</strong> en la academia:</p>
+                    <div class="address">Dance World<br>Cra 11d #118a - 95</div>
+                    <p class="footer-msg">¡Queremos verte disfrutar y moverte al ritmo de este nuevo año!</p>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        const card = document.getElementById('myCard');
-        const music = document.getElementById('bgMusic');
-        let isOpen = false;
-
-        function toggleCard() {
-            isOpen = !isOpen;
-
-            if (isOpen) {
-                // 1. Abrir tarjeta
+        function openCard() {
+            const card = document.getElementById('card');
+            const music = document.getElementById('music');
+            
+            if(!card.classList.contains('open')) {
                 card.classList.add('open');
-                
-                // 2. Reproducir música
-                // Nota: Muchos navegadores bloquean el autoplay, por eso debe ser tras un clic.
-                music.play().catch(error => {
-                    console.log("El navegador bloqueó la reproducción automática de audio. Se necesita interacción.");
-                });
-
-                // 3. Lanzar estrellas
+                music.play();
                 createStars();
             } else {
-                // Cerrar tarjeta y pausar música
                 card.classList.remove('open');
                 music.pause();
-                music.currentTime = 0; // Reiniciar canción
+                music.currentTime = 0;
             }
         }
 
-        // Función para generar la "explosión" de estrellas
         function createStars() {
-            const numStars = 50; // Cantidad de estrellas
-            const container = document.body;
-
-            for (let i = 0; i < numStars; i++) {
+            for (let i = 0; i < 60; i++) {
                 const star = document.createElement('div');
-                star.classList.add('star');
+                star.className = 'star';
                 
-                // Tamaño aleatorio
-                const size = Math.random() * 5 + 2 + 'px';
+                // Configuración aleatoria
+                const size = Math.random() * 4 + 2 + 'px';
                 star.style.width = size;
                 star.style.height = size;
-
-                // Color aleatorio (blanco, dorado, rosa)
-                const colors = ['#ffffff', '#ffe082', '#ff9a9e'];
-                star.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-
-                // Posición inicial (centro de la tarjeta)
                 star.style.left = '50vw';
                 star.style.top = '50vh';
-
-                // Variables para la animación JS (dirección aleatoria)
+                
+                // Dirección de explosión
                 const angle = Math.random() * Math.PI * 2;
-                const radius = Math.random() * 300 + 100; // Radio de explosión
-                const dx = Math.cos(angle) * radius + 'px';
-                const dy = Math.sin(angle) * radius + 'px';
+                const distance = Math.random() * 400 + 100;
+                const dx = Math.cos(angle) * distance + 'px';
+                const dy = Math.sin(angle) * distance + 'px';
+                
                 star.style.setProperty('--dx', dx);
                 star.style.setProperty('--dy', dy);
-
-                // Aplicar animación
-                const duration = Math.random() * 1 + 1 + 's';
-                star.style.animation = `star-explosion ${duration} ease-out forwards`;
-
-                container.appendChild(star);
-
-                // Eliminar el elemento del DOM después de la animación
-                setTimeout(() => {
-                    star.remove();
-                }, 2000);
+                
+                // Animación
+                star.style.animation = `explode ${Math.random() * 1.5 + 0.5}s ease-out forwards`;
+                
+                document.body.appendChild(star);
+                setTimeout(() => star.remove(), 2000);
             }
         }
     </script>
 </body>
 </html>
-
-```
